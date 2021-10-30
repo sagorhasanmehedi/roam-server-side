@@ -74,6 +74,11 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
   res.send("All ok in assignment 11 server");
 });
+
+app.get("/chaking", (req, res) => {
+  res.send("Chaking Server Update");
+});
+
 app.listen(port, () => {
   console.log("assignment 11 server runing in port :", port);
 });
