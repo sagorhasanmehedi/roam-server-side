@@ -114,7 +114,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/chakingupdate", (req, res) => {
-  res.send("Chaking Server Update 2.0");
+  res.send("Chaking Server Update 3.0");
 });
 
 app.listen(port, () => {
