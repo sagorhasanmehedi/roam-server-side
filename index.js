@@ -25,6 +25,7 @@ async function run() {
     // database and collection
     const database = client.db("Assignment-11");
     const Bookingcollection = database.collection("Booking");
+    const confirmcollection = database.collection("Confirm");
 
     //  get booking
     app.get("/services", async (req, res) => {
@@ -41,18 +42,54 @@ async function run() {
     });
 
     // booking confirm
-    app.put("/confirmbook/:id", async (req, res) => {
+    app.put("/confirmbook", async (req, res) => {
       const data = req.body;
+      const result = await confirmcollection.insertOne(data);
+      res.send(result);
+    });
+
+    // find my order
+    app.post("/findbooking", async (req, res) => {
+      const email = req.query.email;
+      const query = { email };
+      const result = await confirmcollection.find(query).toArray();
+
+      res.send(result);
+    });
+
+    // add new destination
+    app.post("/addnew", async (req, res) => {
+      const result = await Bookingcollection.insertOne(req.body);
+      res.send(result);
+    });
+
+    // delete my order
+    app.delete("/deletebooking/:id", async (req, res) => {
+      const result = await confirmcollection.deleteOne({
+        _id: req.params.id,
+      });
+
+      res.send(result);
+    });
+
+    // get addmin data
+    app.get("/getadmindata", async (req, res) => {
+      const result = await confirmcollection.find({}).toArray();
+      res.send(result);
+    });
+
+    // update status
+    app.post("/statusupdate/:id", async (req, res) => {
+      const data = req.body.statusdata;
+      const filter = { _id: req.params.id };
       const options = { upsert: true };
-      const filter = { _id: ObjectId(req.params.id) };
+
       const updateDoc = {
         $set: {
-          email: data.email,
-          status: data.status,
-          userINFO: data.userINFO,
+          status: data,
         },
       };
-      const result = await Bookingcollection.updateOne(
+      const result = await confirmcollection.updateOne(
         filter,
         updateDoc,
         options
@@ -61,9 +98,10 @@ async function run() {
       res.send(result);
     });
 
-    // find my order
-    app.post("/findbooking", (req, res) => {
-      console.log(req.query);
+    // delete admin data
+    app.delete("/deleteaddmindata/:id", async (req, res) => {
+      const result = await confirmcollection.deleteOne({ _id: req.params.id });
+      res.send(result);
     });
   } finally {
     //   await client.close()
@@ -75,8 +113,8 @@ app.get("/", (req, res) => {
   res.send("All ok in assignment 11 server");
 });
 
-app.get("/chaking", (req, res) => {
-  res.send("Chaking Server Update");
+app.get("/chakingupdate", (req, res) => {
+  res.send("Chaking Server Update 2.0");
 });
 
 app.listen(port, () => {
