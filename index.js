@@ -120,6 +120,3 @@ app.get("/chakingupdate", (req, res) => {
 app.listen(port, () => {
   console.log("assignment 11 server runing in port :", port);
 });
-
-
-chaking origin
